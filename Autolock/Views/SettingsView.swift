@@ -8,6 +8,8 @@ struct SettingsView: View {
     @State private var pin: String = ""
     @State private var credentialsStored = false
     @State private var statusMessage: String?
+    @State private var isTestingLock = false
+    @State private var testLockResult: String?
 
     var body: some View {
         NavigationStack {
@@ -57,6 +59,31 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Button {
+                        runTestLock()
+                    } label: {
+                        HStack {
+                            Text("Test Lock")
+                            if isTestingLock {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(isTestingLock || !credentialsStored)
+                } header: {
+                    Text("Manual Test")
+                } footer: {
+                    if let testLockResult {
+                        Text(testLockResult)
+                    } else {
+                        Text(settings.dryRunEnabled
+                             ? "Dry run is on, so this will log a simulated attempt rather than calling Bluelink."
+                             : "Dry run is off -- this sends a real lock command to your car.")
+                    }
+                }
+
+                Section {
                     NavigationLink("View Logs") {
                         LogView()
                     }
@@ -98,6 +125,36 @@ struct SettingsView: View {
             LogStore.shared.append(event: "credentials_saved")
         } catch {
             statusMessage = "Failed to save credentials: \(error.localizedDescription)"
+        }
+    }
+
+    private func runTestLock() {
+        isTestingLock = true
+        testLockResult = nil
+        let dryRun = settings.dryRunEnabled
+        Task {
+            let result = await LockCarService.lockCar(dryRun: dryRun)
+            await MainActor.run {
+                testLockResult = description(for: result)
+                isTestingLock = false
+            }
+        }
+    }
+
+    private func description(for result: LockCarResult) -> String {
+        switch result {
+        case .dryRun:
+            return "Dry run: logged what would have happened. See View Logs for details."
+        case .success:
+            return "Lock confirmed successful."
+        case .confirmedFailure:
+            return "Bluelink reported the lock command failed."
+        case .sentUnconfirmed:
+            return "Lock command sent, but confirmation was inconclusive. Check the car and View Logs."
+        case .skippedNoCredentials:
+            return "No credentials saved -- add them above first."
+        case .failed(let message):
+            return "Failed: \(message)"
         }
     }
 
