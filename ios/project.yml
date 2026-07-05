@@ -54,8 +54,14 @@ schemes:
   Autolock:
     build:
       targets:
-        Autolock: all
-        AutolockTests: all
+        Autolock:
+          - running
+          - testing
+          - profiling
+          - analyzing
+          - archiving
+        AutolockTests:
+          - testing
     test:
       targets:
         - AutolockTests
