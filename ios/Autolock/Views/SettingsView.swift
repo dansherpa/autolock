@@ -84,6 +84,9 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink("Set Up Automation") {
+                        AutomationSetupView()
+                    }
                     NavigationLink("View Logs") {
                         LogView()
                     }
@@ -96,7 +99,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            .navigationTitle("Autolock")
+            .navigationTitle("Walkaway Lock")
             .onAppear(perform: loadCredentials)
         }
     }

@@ -10,7 +10,7 @@ import AppIntents
 struct LockCarIntent: AppIntent {
     static let title: LocalizedStringResource = "Lock Car"
     static let description = IntentDescription(
-        "Locks your Hyundai via Bluelink, respecting the Dry Run and cooldown settings configured in Autolock."
+        "Locks your Hyundai via Bluelink, respecting the Dry Run and cooldown settings configured in Walkaway Lock."
     )
 
     static let openAppWhenRun: Bool = false
