@@ -24,7 +24,7 @@ targets:
       path: Autolock/Info.plist
       properties:
         UILaunchScreen: {}
-        CFBundleDisplayName: Autolock
+        CFBundleDisplayName: Walkaway Lock
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
     settings:
@@ -33,6 +33,7 @@ targets:
         PRODUCT_NAME: Autolock
         TARGETED_DEVICE_FAMILY: "1"
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   AutolockTests:
     type: bundle.unit-test
