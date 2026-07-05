@@ -1,0 +1,63 @@
+PRIVACY POLICY - WALKAWAY LOCK
+
+Last updated July 5, 2026
+
+This privacy notice for sendprobe.com ("we," "us," or "our") describes how and why we might access, collect, store, use, and/or share ("process") your information when you use our mobile application, Walkaway Lock (the "App").
+
+SUMMARY OF KEY POINTS
+
+- We do not collect, store, or transmit any personal information to sendprobe.com or any server we operate. The App has no backend - everything happens on your device.
+
+- Your Hyundai Bluelink username, password, and PIN are stored only in Apple's encrypted Keychain on your device. We never see, receive, or store them.
+
+- Your credentials are used only to communicate directly between your device and Hyundai's Bluelink service, to send lock commands to your vehicle.
+
+- The App does not use analytics, advertising, or any form of tracking.
+
+- The App does not share information with third parties, because it does not collect any.
+
+- Your device's Wi-Fi connection state (used to detect when you've left your vehicle) is read and used entirely on-device via Apple's Shortcuts automation feature. It never leaves your device.
+
+1. WHAT INFORMATION DO WE PROCESS?
+
+We do not process, collect, or receive any information about you. The App stores your Bluelink account credentials (username, password, vehicle PIN) locally in your iPhone's Keychain, protected by Apple's device encryption. This information stays on your device.
+
+2. HOW DO WE PROCESS YOUR INFORMATION?
+
+We don't - there is nothing for us to process. All the App's functionality runs locally on your device. When you trigger a lock action, your device communicates directly with Hyundai's Bluelink service using your stored credentials; sendprobe.com is never involved in or aware of that exchange.
+
+3. DO WE SHARE YOUR INFORMATION?
+
+No. We do not have a server or database, so there is nothing to share, sell, or disclose to any third party.
+
+4. THIRD-PARTY SERVICES
+
+The App communicates directly with Hyundai's Bluelink service to send commands to your vehicle. That exchange is governed by Hyundai's own privacy policy and terms of service, not this one. Walkaway Lock is an independent app and is not affiliated with, endorsed by, or sponsored by Hyundai Motor Company.
+
+5. HOW LONG DO WE KEEP YOUR INFORMATION?
+
+We don't keep any of your information, because we never receive it. Data stored locally on your device (your credentials and an on-device activity log) remains there until you clear it in the App's settings or delete the App.
+
+6. HOW DO WE KEEP YOUR INFORMATION SAFE?
+
+Your Bluelink credentials are stored using Apple's Keychain Services, encrypted at rest by iOS. No credential values are ever written to logs, analytics, or any file outside the Keychain. No method of storage is 100% secure, but we've designed the App to minimize what's stored and to keep it local to your device.
+
+7. DO WE COLLECT INFORMATION FROM MINORS?
+
+The App is not directed at, and should not be used by, anyone under the age of 18, consistent with Hyundai Bluelink's own account requirements.
+
+8. WHAT ARE YOUR PRIVACY RIGHTS?
+
+Because we do not collect any personal information, there is no data for us to let you access, correct, or delete on our end. You can remove all locally stored data at any time by clearing your saved credentials in the App's settings or by deleting the App.
+
+9. DO-NOT-TRACK FEATURES
+
+The App does not track you, so there is nothing for Do-Not-Track signals to opt you out of.
+
+10. DO WE MAKE UPDATES TO THIS NOTICE?
+
+We may update this notice from time to time. The updated version will be indicated by a revised "Last updated" date, and the updated notice will be posted at this same location.
+
+11. CONTACT US
+
+If you have questions or comments about this notice, email us at info@sendprobe.com.
