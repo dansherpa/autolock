@@ -10,6 +10,10 @@ private struct SetupStep: Identifiable {
 struct AutomationSetupView: View {
     private let steps: [SetupStep] = [
         SetupStep(
+            title: "Connect your phone to your car's Wi-Fi",
+            detail: "In iPhone Settings > Wi-Fi, join your car's network at least once. Being connected to CarPlay is not the same thing -- your phone won't join the car's Wi-Fi automatically just because CarPlay is connected. The network name is usually something like \"Hyundai_XXXX\" (check your car's infotainment Wi-Fi Hotspot settings if you're not sure)."
+        ),
+        SetupStep(
             title: "Open the Shortcuts app",
             detail: "It's a built-in Apple app. If you don't see it, search for \"Shortcuts\" in Spotlight."
         ),
