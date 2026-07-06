@@ -255,5 +255,6 @@ private fun describeResult(result: LockCarResult): String = when (result) {
     is LockCarResult.ConfirmedFailure -> "Bluelink reported the lock command failed."
     is LockCarResult.SentUnconfirmed -> "Lock command sent, but confirmation was inconclusive. Check the car and View Logs."
     is LockCarResult.SkippedNoCredentials -> "No credentials saved -- add them above first."
+    is LockCarResult.Debounced -> "Debounced (cooldown still active)."
     is LockCarResult.Failed -> "Failed: ${result.message}"
 }

@@ -1,20 +1,51 @@
 package com.sendprobe.autolock.notification
 
+import android.app.Notification
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import com.sendprobe.autolock.bluelink.LockTrigger
+import com.sendprobe.autolock.storage.LogStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 /**
- * Declared now (rather than in a later step) so this app actually appears
- * as a togglable entry in system Notification Access settings -- without
- * at least one declared listener service, there is nothing for that
- * screen's toggle to control.
+ * Listens for the vehicle-unlocked notification Bluelink itself posts and
+ * fires the debounce-checked lock flow when it matches. The source-app
+ * filter lives in BluelinkNotificationSource and the text match in
+ * BluelinkUnlockMatcher, both isolated so either can be tuned without
+ * touching this class.
  *
- * Package filtering and unlock-text matching land in a later step; for
- * now this deliberately does nothing.
+ * Every notification from a likely-Bluelink source is logged (title +
+ * text) regardless of match, so real-world wording can be captured from
+ * the in-app log viewer and used to populate BluelinkUnlockMatcher.
  */
 class BluelinkNotificationListenerService : NotificationListenerService() {
+    private val serviceJob = SupervisorJob()
+    private val serviceScope = CoroutineScope(Dispatchers.Default + serviceJob)
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        // Intentionally empty until the Bluelink package is confirmed
-        // and match logic is implemented.
+        val packageName = sbn.packageName
+        if (!BluelinkNotificationSource.isLikelySource(packageName)) return
+
+        val extras = sbn.notification.extras
+        val title = extras.getCharSequence(Notification.EXTRA_TITLE)?.toString().orEmpty()
+        val text = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString().orEmpty()
+
+        val logStore = LogStore.get(applicationContext)
+        logStore.append("notification_seen", "pkg=$packageName title=\"$title\" text=\"$text\"")
+
+        if (!BluelinkUnlockMatcher.isUnlockAlert(title, text)) return
+
+        logStore.append("unlock_alert_matched", "pkg=$packageName")
+        serviceScope.launch {
+            LockTrigger.fire(applicationContext)
+        }
+    }
+
+    override fun onDestroy() {
+        serviceJob.cancel()
+        super.onDestroy()
     }
 }

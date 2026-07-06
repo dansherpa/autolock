@@ -15,6 +15,7 @@ sealed class LockCarResult {
     object ConfirmedFailure : LockCarResult()
     object SentUnconfirmed : LockCarResult()
     object SkippedNoCredentials : LockCarResult()
+    object Debounced : LockCarResult()
     data class Failed(val message: String) : LockCarResult()
 }
 
