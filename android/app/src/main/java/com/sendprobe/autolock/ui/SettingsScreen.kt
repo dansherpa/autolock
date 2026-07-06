@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -25,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,11 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.sendprobe.autolock.bluelink.LockCarResult
+import com.sendprobe.autolock.bluelink.LockCarService
 import com.sendprobe.autolock.model.BluelinkCredentials
 import com.sendprobe.autolock.notification.NotificationAccess
 import com.sendprobe.autolock.storage.AppSettings
 import com.sendprobe.autolock.storage.CredentialsStore
 import com.sendprobe.autolock.storage.LogStore
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +60,9 @@ fun SettingsScreen(onViewLogs: () -> Unit) {
     var credentialsStored by remember { mutableStateOf(false) }
     var statusMessage by remember { mutableStateOf<String?>(null) }
     var notificationAccessEnabled by remember { mutableStateOf(NotificationAccess.isEnabled(context)) }
+    var isTestingLock by remember { mutableStateOf(false) }
+    var testLockResult by remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         val stored = CredentialsStore.load(context)
@@ -191,6 +200,36 @@ fun SettingsScreen(onViewLogs: () -> Unit) {
                 }
             }
 
+            SettingsSection(title = "Manual Test") {
+                Button(
+                    onClick = {
+                        isTestingLock = true
+                        testLockResult = null
+                        val dryRun = settings.dryRunEnabled
+                        coroutineScope.launch {
+                            val result = LockCarService.lockCar(context, dryRun = dryRun)
+                            testLockResult = describeResult(result)
+                            isTestingLock = false
+                        }
+                    },
+                    enabled = !isTestingLock && credentialsStored
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Test Lock")
+                        if (isTestingLock) {
+                            CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                        }
+                    }
+                }
+                Text(
+                    testLockResult ?: if (settings.dryRunEnabled)
+                        "Dry run is on, so this will log a simulated attempt rather than calling Bluelink."
+                    else
+                        "Dry run is off -- this sends a real lock command to your car.",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
             OutlinedButton(onClick = onViewLogs, modifier = Modifier.fillMaxWidth()) {
                 Text("View Logs")
             }
@@ -208,4 +247,13 @@ private fun SettingsSection(title: String, content: @Composable ColumnScope.() -
         Text(title, style = MaterialTheme.typography.titleMedium)
         content()
     }
+}
+
+private fun describeResult(result: LockCarResult): String = when (result) {
+    is LockCarResult.DryRun -> "Dry run: logged what would have happened. See View Logs for details."
+    is LockCarResult.Success -> "Lock confirmed successful."
+    is LockCarResult.ConfirmedFailure -> "Bluelink reported the lock command failed."
+    is LockCarResult.SentUnconfirmed -> "Lock command sent, but confirmation was inconclusive. Check the car and View Logs."
+    is LockCarResult.SkippedNoCredentials -> "No credentials saved -- add them above first."
+    is LockCarResult.Failed -> "Failed: ${result.message}"
 }
