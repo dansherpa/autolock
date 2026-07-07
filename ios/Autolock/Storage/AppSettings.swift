@@ -11,6 +11,7 @@ final class AppSettings: ObservableObject {
     private enum Keys {
         static let dryRunEnabled = "dryRunEnabled"
         static let debounceSeconds = "debounceSeconds"
+        static let preLockDelaySeconds = "preLockDelaySeconds"
         static let lastTriggerDate = "lastTriggerDate"
     }
 
@@ -24,6 +25,15 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(debounceSeconds, forKey: Keys.debounceSeconds) }
     }
 
+    /// Delay between a trigger firing and the lock command actually being
+    /// sent, so someone still getting out of the car isn't locked out --
+    /// some automation triggers (e.g. Bluetooth or CarPlay disconnecting)
+    /// can fire the instant the car is turned off, before the driver has
+    /// stepped away.
+    @Published var preLockDelaySeconds: Double {
+        didSet { defaults.set(preLockDelaySeconds, forKey: Keys.preLockDelaySeconds) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         // Dry run defaults to true (opt-in to live commands) even on first
@@ -31,10 +41,12 @@ final class AppSettings: ObservableObject {
         // an unset key -- registerDefaults makes that explicit either way.
         defaults.register(defaults: [
             Keys.dryRunEnabled: true,
-            Keys.debounceSeconds: 90.0
+            Keys.debounceSeconds: 90.0,
+            Keys.preLockDelaySeconds: 30.0
         ])
         self.dryRunEnabled = defaults.bool(forKey: Keys.dryRunEnabled)
         self.debounceSeconds = defaults.double(forKey: Keys.debounceSeconds)
+        self.preLockDelaySeconds = defaults.double(forKey: Keys.preLockDelaySeconds)
     }
 
     var lastTriggerDate: Date? {

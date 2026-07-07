@@ -10,8 +10,8 @@ settings:
     DEVELOPMENT_TEAM: YOUR_TEAM_ID
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: 6.0
-    MARKETING_VERSION: "1.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "1.0.2"
+    CURRENT_PROJECT_VERSION: "2"
 
 targets:
   Autolock:
@@ -25,6 +25,8 @@ targets:
       properties:
         UILaunchScreen: {}
         CFBundleDisplayName: Walkaway Lock
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
     settings:

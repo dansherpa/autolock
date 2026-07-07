@@ -10,8 +10,8 @@ private struct SetupStep: Identifiable {
 struct AutomationSetupView: View {
     private let steps: [SetupStep] = [
         SetupStep(
-            title: "Connect your phone to your car's Wi-Fi",
-            detail: "In iPhone Settings > Wi-Fi, join your car's network at least once. Being connected to CarPlay is not the same thing -- your phone won't join the car's Wi-Fi automatically just because CarPlay is connected. The network name is usually something like \"Hyundai_XXXX\" (check your car's infotainment Wi-Fi Hotspot settings if you're not sure)."
+            title: "Connect your phone to your car's Wi-Fi (if using Wi-Fi as the trigger)",
+            detail: "In iPhone Settings > Wi-Fi, join your car's network at least once. Being connected to CarPlay is not the same thing -- your phone won't join the car's Wi-Fi automatically just because CarPlay is connected. The network name is usually something like \"Hyundai_XXXX\" (check your car's infotainment Wi-Fi Hotspot settings if you're not sure). Skip this step if you're using Bluetooth or CarPlay disconnect instead."
         ),
         SetupStep(
             title: "Open the Shortcuts app",
@@ -22,12 +22,12 @@ struct AutomationSetupView: View {
             detail: "Tap \"Automation\" at the bottom, then tap the + button in the top corner and choose \"Create Personal Automation\"."
         ),
         SetupStep(
-            title: "Choose \"Wi-Fi\" as the trigger",
-            detail: "Scroll down to the \"Wi-Fi\" option in the list of triggers."
+            title: "Choose a trigger for \"leaving the car\"",
+            detail: "Wi-Fi disconnect is just one example -- pick whatever signal is most reliable for your car. Other options in Shortcuts include Bluetooth disconnect (if your car pairs as a Bluetooth device) or CarPlay disconnect. Scroll to find the one that matches."
         ),
         SetupStep(
-            title: "Select your car's Wi-Fi network",
-            detail: "Tap \"Choose\", pick your car's Wi-Fi network name from the list, then set the trigger to \"Disconnect\" (not Connect). Tap Next."
+            title: "Configure the trigger to fire on disconnect",
+            detail: "For Wi-Fi: tap \"Choose\", pick your car's Wi-Fi network name from the list, then set the trigger to \"Disconnect\" (not Connect). For Bluetooth or CarPlay: choose your car from the device list and set it to \"Disconnect\" the same way. Tap Next."
         ),
         SetupStep(
             title: "Add the \"Lock Car\" action",
@@ -39,7 +39,7 @@ struct AutomationSetupView: View {
         ),
         SetupStep(
             title: "Test it with Dry Run still on",
-            detail: "Leave Dry Run enabled in Settings, then walk out of your car's Wi-Fi range. Check View Logs afterward for a \"dry_run_lock\" entry to confirm the automation actually fired."
+            detail: "Leave Dry Run enabled in Settings, then trigger your automation (e.g. walk out of your car's Wi-Fi range). Check View Logs afterward for a \"dry_run_lock\" entry to confirm the automation actually fired. If you've set a Pre-Lock Delay in Settings, you'll see a \"pre_lock_delay_started\" entry first."
         ),
         SetupStep(
             title: "Turn off Dry Run when you're confident",

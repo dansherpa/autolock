@@ -59,6 +59,14 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Stepper(value: $settings.preLockDelaySeconds, in: 0...300, step: 15) {
+                        Text("Pre-Lock Delay: \(Int(settings.preLockDelaySeconds))s")
+                    }
+                } footer: {
+                    Text("Waits this long after a trigger before actually sending the lock command, so you have time to get out of the car if the trigger fires the moment it's turned off. Set to 0 to lock immediately.")
+                }
+
+                Section {
                     Button {
                         runTestLock()
                     } label: {
