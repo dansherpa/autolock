@@ -18,6 +18,10 @@ struct AutomationSetupView: View {
             detail: "It's a built-in Apple app. If you don't see it, search for \"Shortcuts\" in Spotlight."
         ),
         SetupStep(
+            title: "Create a \"Wait & Lock\" shortcut first",
+            detail: "Go to the \"Shortcuts\" tab (not Automation) and tap + to create a new shortcut. Add a \"Wait\" action (under Scripting) and set it to however many seconds you want -- this gives you time to get out of the car if your trigger fires the instant it's turned off. Then add the \"Lock Car\" action after it, under Walkaway Lock. Rename the shortcut to something like \"Wait & Lock\" (tap the name at the top, or its settings) so you can find it in the next step."
+        ),
+        SetupStep(
             title: "Go to the Automation tab",
             detail: "Tap \"Automation\" at the bottom, then tap the + button in the top corner and choose \"Create Personal Automation\"."
         ),
@@ -30,12 +34,8 @@ struct AutomationSetupView: View {
             detail: "For Wi-Fi: tap \"Choose\", pick your car's Wi-Fi network name from the list, then set the trigger to \"Disconnect\" (not Connect). For Bluetooth or CarPlay: choose your car from the device list and set it to \"Disconnect\" the same way. Tap Next."
         ),
         SetupStep(
-            title: "Add a \"Wait\" action (recommended)",
-            detail: "Tap \"Add Action\", search for \"Wait\" (it's under Scripting), and set it to however many seconds you want -- match the Pre-Lock Delay value in Settings. This gives you time to get out of the car if your trigger fires the instant it's turned off. This has to be a native Shortcuts action; the app can't safely do this delay itself (a silent automation only gets a short window to finish before iOS kills it, and blocking inside the app ate that whole window)."
-        ),
-        SetupStep(
-            title: "Add the \"Lock Car\" action",
-            detail: "Tap \"Add Action\" again, search for \"Lock Car\", and select it under Walkaway Lock. Make sure it comes after the Wait action, if you added one. Tap Next."
+            title: "Add \"Run Shortcut\" and pick \"Wait & Lock\"",
+            detail: "Personal Automations only host a single action here, so instead of adding \"Wait\" and \"Lock Car\" directly, tap \"Add Action\", search for \"Run Shortcut\", add it, then tap it and choose the \"Wait & Lock\" shortcut you created in step 2. Tap Next."
         ),
         SetupStep(
             title: "Turn off \"Ask Before Running\"",
