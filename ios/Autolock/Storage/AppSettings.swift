@@ -25,11 +25,14 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(debounceSeconds, forKey: Keys.debounceSeconds) }
     }
 
-    /// Delay between a trigger firing and the lock command actually being
-    /// sent, so someone still getting out of the car isn't locked out --
-    /// some automation triggers (e.g. Bluetooth or CarPlay disconnecting)
-    /// can fire the instant the car is turned off, before the driver has
-    /// stepped away.
+    /// NOT enforced by the app itself -- silent App Intents run under a
+    /// strict background execution budget (commonly ~30s), and blocking
+    /// inside the intent for a delay reliably got it killed mid-flight
+    /// before the Bluelink call even finished ("unknown error occurred" in
+    /// Shortcuts). This value is purely a reference number shown in
+    /// Settings/the setup guide so the user configures a matching native
+    /// "Wait" action in the Shortcuts automation itself, which isn't bound
+    /// by our intent's execution budget.
     @Published var preLockDelaySeconds: Double {
         didSet { defaults.set(preLockDelaySeconds, forKey: Keys.preLockDelaySeconds) }
     }

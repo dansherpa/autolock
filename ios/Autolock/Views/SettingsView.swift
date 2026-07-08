@@ -63,7 +63,7 @@ struct SettingsView: View {
                         Text("Pre-Lock Delay: \(Int(settings.preLockDelaySeconds))s")
                     }
                 } footer: {
-                    Text("Waits this long after a trigger before actually sending the lock command, so you have time to get out of the car if the trigger fires the moment it's turned off. Set to 0 to lock immediately.")
+                    Text("This isn't enforced automatically -- add a matching \"Wait\" action before \"Lock Car\" in your Shortcuts automation. See Set Up Automation below. (A delay inside the app itself gets killed by iOS before it can finish -- that's not something this setting can fix.)")
                 }
 
                 Section {

@@ -30,8 +30,12 @@ struct AutomationSetupView: View {
             detail: "For Wi-Fi: tap \"Choose\", pick your car's Wi-Fi network name from the list, then set the trigger to \"Disconnect\" (not Connect). For Bluetooth or CarPlay: choose your car from the device list and set it to \"Disconnect\" the same way. Tap Next."
         ),
         SetupStep(
+            title: "Add a \"Wait\" action (recommended)",
+            detail: "Tap \"Add Action\", search for \"Wait\" (it's under Scripting), and set it to however many seconds you want -- match the Pre-Lock Delay value in Settings. This gives you time to get out of the car if your trigger fires the instant it's turned off. This has to be a native Shortcuts action; the app can't safely do this delay itself (a silent automation only gets a short window to finish before iOS kills it, and blocking inside the app ate that whole window)."
+        ),
+        SetupStep(
             title: "Add the \"Lock Car\" action",
-            detail: "Tap \"Add Action\", search for \"Lock Car\", and select it under Walkaway Lock. Tap Next."
+            detail: "Tap \"Add Action\" again, search for \"Lock Car\", and select it under Walkaway Lock. Make sure it comes after the Wait action, if you added one. Tap Next."
         ),
         SetupStep(
             title: "Turn off \"Ask Before Running\"",
@@ -39,7 +43,7 @@ struct AutomationSetupView: View {
         ),
         SetupStep(
             title: "Test it with Dry Run still on",
-            detail: "Leave Dry Run enabled in Settings, then trigger your automation (e.g. walk out of your car's Wi-Fi range). Check View Logs afterward for a \"dry_run_lock\" entry to confirm the automation actually fired. If you've set a Pre-Lock Delay in Settings, you'll see a \"pre_lock_delay_started\" entry first."
+            detail: "Leave Dry Run enabled in Settings, then trigger your automation (e.g. walk out of your car's Wi-Fi range). Check View Logs afterward for a \"dry_run_lock\" entry to confirm the automation actually fired. If you get a notification that the automation failed, see the note below."
         ),
         SetupStep(
             title: "Turn off Dry Run when you're confident",
@@ -65,6 +69,14 @@ struct AutomationSetupView: View {
                     }
                     .padding(.vertical, 4)
                 }
+            }
+
+            Section {
+                Text("If Shortcuts shows a notification that \"Lock Car\" could not run because of an unknown error, try shortening or removing the Wait action. Very long silent automations can run into the same iOS background time limit the Wait step is meant to work around.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Troubleshooting")
             }
 
             Section {

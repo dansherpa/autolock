@@ -10,7 +10,6 @@ final class LockCarIntentTests: XCTestCase {
         LogStore.shared.clear()
         AppSettings.shared.dryRunEnabled = true
         AppSettings.shared.debounceSeconds = 90
-        AppSettings.shared.preLockDelaySeconds = 0
         AppSettings.shared.lastTriggerDate = nil
     }
 
@@ -48,23 +47,5 @@ final class LockCarIntentTests: XCTestCase {
 
         let events = LogStore.shared.all().map(\.event)
         XCTAssertTrue(events.contains("trigger_received"))
-    }
-
-    func testPreLockDelayLogsBeforeSendingLockCommand() async throws {
-        AppSettings.shared.preLockDelaySeconds = 1
-
-        _ = try await LockCarIntent().perform()
-
-        let events = LogStore.shared.all().map(\.event).reversed()
-        XCTAssertEqual(Array(events), ["trigger_received", "pre_lock_delay_started", "dry_run_lock"])
-    }
-
-    func testZeroPreLockDelaySkipsDelayLog() async throws {
-        AppSettings.shared.preLockDelaySeconds = 0
-
-        _ = try await LockCarIntent().perform()
-
-        let events = LogStore.shared.all().map(\.event).reversed()
-        XCTAssertEqual(Array(events), ["trigger_received", "dry_run_lock"])
     }
 }

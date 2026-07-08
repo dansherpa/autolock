@@ -11,11 +11,19 @@ import AppIntents
 struct LockCarIntent: AppIntent {
     static let title: LocalizedStringResource = "Lock Car"
     static let description = IntentDescription(
-        "Locks your Hyundai via Bluelink, respecting the Dry Run, cooldown, and pre-lock delay settings configured in Walkaway Lock."
+        "Locks your Hyundai via Bluelink, respecting the Dry Run and cooldown settings configured in Walkaway Lock."
     )
 
     static let openAppWhenRun: Bool = false
 
+    // Deliberately does NOT sleep/delay before locking. Silent automations
+    // (openAppWhenRun = false, "Ask Before Running" off) run under a strict
+    // background execution budget (commonly ~30s) -- blocking here for a
+    // user-configurable delay ate that budget before the Bluelink network
+    // calls even started, and Shortcuts reported "unknown error occurred"
+    // when the intent got killed mid-flight. Any pre-lock wait needs to
+    // happen in the Shortcuts automation itself (a native "Wait" action
+    // before this one), not inside perform().
     @MainActor
     func perform() async throws -> some IntentResult {
         let settings = AppSettings.shared
@@ -29,16 +37,6 @@ struct LockCarIntent: AppIntent {
         }
 
         LogStore.shared.append(event: "trigger_received")
-
-        let delaySeconds = settings.preLockDelaySeconds
-        if delaySeconds > 0 {
-            LogStore.shared.append(
-                event: "pre_lock_delay_started",
-                detail: "waiting \(Int(delaySeconds))s before sending lock command"
-            )
-            try? await Task.sleep(nanoseconds: UInt64(delaySeconds * 1_000_000_000))
-        }
-
         _ = await LockCarService.lockCar(dryRun: settings.dryRunEnabled)
         return .result()
     }
