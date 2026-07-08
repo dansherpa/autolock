@@ -59,14 +59,6 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Stepper(value: $settings.preLockDelaySeconds, in: 0...300, step: 15) {
-                        Text("Pre-Lock Delay: \(Int(settings.preLockDelaySeconds))s")
-                    }
-                } footer: {
-                    Text("This isn't enforced automatically -- add a matching \"Wait\" action before \"Lock Car\" in a Shortcuts shortcut your automation runs. See Set Up Automation below. (A delay inside the app itself gets killed by iOS before it can finish -- that's not something this setting can fix.)")
-                }
-
-                Section {
                     Button {
                         runTestLock()
                     } label: {

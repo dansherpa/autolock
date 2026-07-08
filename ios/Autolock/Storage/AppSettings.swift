@@ -11,7 +11,6 @@ final class AppSettings: ObservableObject {
     private enum Keys {
         static let dryRunEnabled = "dryRunEnabled"
         static let debounceSeconds = "debounceSeconds"
-        static let preLockDelaySeconds = "preLockDelaySeconds"
         static let lastTriggerDate = "lastTriggerDate"
     }
 
@@ -25,18 +24,6 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(debounceSeconds, forKey: Keys.debounceSeconds) }
     }
 
-    /// NOT enforced by the app itself -- silent App Intents run under a
-    /// strict background execution budget (commonly ~30s), and blocking
-    /// inside the intent for a delay reliably got it killed mid-flight
-    /// before the Bluelink call even finished ("unknown error occurred" in
-    /// Shortcuts). This value is purely a reference number shown in
-    /// Settings/the setup guide so the user configures a matching native
-    /// "Wait" action in the Shortcuts automation itself, which isn't bound
-    /// by our intent's execution budget.
-    @Published var preLockDelaySeconds: Double {
-        didSet { defaults.set(preLockDelaySeconds, forKey: Keys.preLockDelaySeconds) }
-    }
-
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         // Dry run defaults to true (opt-in to live commands) even on first
@@ -44,12 +31,10 @@ final class AppSettings: ObservableObject {
         // an unset key -- registerDefaults makes that explicit either way.
         defaults.register(defaults: [
             Keys.dryRunEnabled: true,
-            Keys.debounceSeconds: 90.0,
-            Keys.preLockDelaySeconds: 30.0
+            Keys.debounceSeconds: 90.0
         ])
         self.dryRunEnabled = defaults.bool(forKey: Keys.dryRunEnabled)
         self.debounceSeconds = defaults.double(forKey: Keys.debounceSeconds)
-        self.preLockDelaySeconds = defaults.double(forKey: Keys.preLockDelaySeconds)
     }
 
     var lastTriggerDate: Date? {
